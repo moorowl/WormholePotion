@@ -8,8 +8,8 @@ using WormholePotion.Networking;
 namespace WormholePotion {
 	public static class TeleportUtils {
 		public const float HoveredMarkerScale = 2f;
-		public const string TeleportedToTerm = "WormholePotion:teleportedTo";
-		public const string TeleportToTerm = "WormholePotion:teleportTo";
+		public const string TeleportedToTerm = "WormholePotion-StatusMessages/TeleportedTo";
+		public const string TeleportToTerm = "WormholePotion-StatusMessages/TeleportTo";
 
 		public static void CreateClientTeleportRequest(Entity targetPlayer) {
 			var ecb = API.Client.World.GetExistingSystemManaged<BeginSimulationEntityCommandBufferSystem>().CreateCommandBuffer();

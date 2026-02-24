@@ -2,12 +2,11 @@
 using PugMod;
 using Unity.Entities;
 using UnityEngine;
-using WormholePotion.Networking;
 using RangeInt = Pug.UnityExtensions.RangeInt;
 
 namespace WormholePotion {
 	public class Main : IMod {
-		public const string Version = "1.0.2";
+		public const string Version = "1.0.3";
 		public const string InternalName = "WormholePotion";
 		public const string DisplayName = "Wormhole Potion";
 
@@ -19,19 +18,11 @@ namespace WormholePotion {
 
 		public void Init() {
 			WormholePotionId = API.Authoring.GetObjectID("WormholePotion:WormholePotion");
-
-			// Add recipe to the Distillery Table
-			API.Authoring.OnObjectTypeAdded += (entity, authoring, manager) => {
-				var objectData = manager.GetComponentData<ObjectDataCD>(entity);
-				if (objectData.objectID != ObjectID.LaboratoryWorkbench)
-					return;
-
-				var canCraftObjects = manager.GetBuffer<CanCraftObjectsBuffer>(entity);
-				InsertCraftableObject(canCraftObjects, new CanCraftObjectsBuffer {
-					objectID = WormholePotionId,
-					amount = 3
-				});
-			};
+			
+			InjectCraftableObject(ObjectID.LaboratoryWorkbench, new CraftingAuthoring.CraftableObject {
+				objectID = WormholePotionId,
+				amount = 1
+			});
 
 			InjectLoot(LootTableID.WorldChest, WormholePotionId, 0.025f, 1, 2);
 			InjectLoot(LootTableID.CavelingDestructbile, WormholePotionId, 0.02f);
@@ -65,17 +56,17 @@ namespace WormholePotion {
 			});
 		}
 
-		private static void InsertCraftableObject(DynamicBuffer<CanCraftObjectsBuffer> buffer, CanCraftObjectsBuffer craftableObject) {
-			for (var i = 0; i < buffer.Length; i++) {
-				var existingCraftableObject = buffer[i];
-				if (existingCraftableObject.objectID != ObjectID.None)
-					continue;
-				
-				buffer[i] = craftableObject;
+		private static void InjectCraftableObject(ObjectID existingCraftingStation, CraftingAuthoring.CraftableObject craftableObject) {
+			var craftingStationData = DatabaseConversionUtility.GetPrefabList(Manager.ecs.pugDatabase).First(prefab => prefab.ObjectInfo.objectID == existingCraftingStation);
+			var craftingStationAuthoring = craftingStationData.ObjectInfo.prefabInfos[0].ecsPrefab;
+			if (!craftingStationAuthoring.TryGetComponent<CraftingAuthoring>(out var craftingAuthoring))
 				return;
-			}
-
-			buffer.Add(craftableObject);
+            
+			var emptyCraftableObjectIndex = craftingAuthoring.canCraftObjects.FindIndex(x => x.objectID == ObjectID.None);
+			if (emptyCraftableObjectIndex > -1)
+				craftingAuthoring.canCraftObjects[emptyCraftableObjectIndex] = craftableObject;
+			else
+				craftingAuthoring.canCraftObjects.Add(craftableObject);
 		}
 	}
 }

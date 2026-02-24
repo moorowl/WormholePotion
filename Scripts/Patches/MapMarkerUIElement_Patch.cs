@@ -1,8 +1,4 @@
-using System.Collections;
 using HarmonyLib;
-using Inventory;
-using PlayerState;
-using Pug.UnityExtensions;
 using UnityEngine;
 
 // ReSharper disable InconsistentNaming
