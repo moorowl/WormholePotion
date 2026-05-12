@@ -103,8 +103,9 @@ MonoBehaviour:
         m_address:
           m_low: 7851011593462244222
           m_high: 4794823751170882376
-      title: 
-      description: 
+      title: "Po\xE7\xE3o do Buraco de Minhoca"
+      description: "Permite \xE0 quem beber teletransportar-se a um membro do time.
+        Interaja com o \xEDcone do membro no mapa em tela cheia."
     - m_language:
         m_address:
           m_low: -998452581336238672
