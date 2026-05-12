@@ -6,7 +6,7 @@ using RangeInt = Pug.UnityExtensions.RangeInt;
 
 namespace WormholePotion {
 	public class Main : IMod {
-		public const string Version = "1.0.3";
+		public const string Version = "1.0.4";
 		public const string InternalName = "WormholePotion";
 		public const string DisplayName = "Wormhole Potion";
 
